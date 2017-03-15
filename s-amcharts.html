@@ -1,0 +1,116 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="s-amcharts-script.html">
+<link rel="import" href="s-amcharts-serial-script.html">
+<link rel="import" href="s-amcharts-export-plugin-script.html">
+<link rel="import" href="s-amcharts-responsive-plugin-script.html">
+<link rel="import" href="s-amcharts-cs-lang-script.html">
+<link rel="import" href="s-amcharts-black-theme-script.html">
+
+<!--
+`s-amcharts`
+A Web Component for high quality charts using amCharts lib.
+
+@demo demo/index.html
+-->
+
+<dom-module id="s-amcharts">
+<template>
+
+<style>
+
+:host {
+  display: block;
+  background-color: #222222;
+  width: 100%;
+  height: 500px;
+}
+
+#chart {
+  width: 100%;
+  height: 100%;
+}
+
+.amcharts-chart-div > a {
+  @apply --s-amcharts-link;
+}
+
+</style>
+
+<div id="chart"></div>
+
+</template>
+<script>
+
+Polymer({
+
+  is: 's-amcharts',
+
+  properties: {
+    /**
+     * JSON object with chart properties defined.
+     */
+    config: {
+      type: Object,
+      value: function() { return {}; }
+    },
+
+    data: {
+      type: Object,
+      observer: '_dataChanged'
+    },
+
+    lang: {
+      type: String,
+      value: 'en'
+    },
+
+    /**
+     * Specifies absolute or relative path to amCharts files, i.e. "amcharts/". (where all .js files are located)
+     */
+    path: {
+      type: String,
+      value: ''
+    },
+
+    plugins: {
+      type: Array
+    },
+
+    theme: {
+      type: String,
+      value: 'light'
+    },
+
+    type: {
+      type: String,
+      value: 'serial'
+    },
+
+    _chart: Object
+  },
+
+  observers: [
+    '_configChanged(config, data, isAttached)'
+  ],
+
+  _configChanged: function(config, data, isAttached) {
+    if (Object.keys(config).length !== 0) {
+      config.dataProvider = data;
+      config.language = this.lang;
+      config.path = this.path || this.resolveUrl('../amcharts3/amcharts/');
+      config.theme = this.theme;
+      config.type = this.type;
+      this._chart = AmCharts.makeChart("chart", config);
+    }
+  },
+
+  _dataChanged: function(data) {
+    if (this._chart) {
+      this._chart.dataProvider = data;
+    }
+  }
+
+});
+
+</script>
+</dom-module>
