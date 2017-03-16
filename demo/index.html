@@ -20,6 +20,12 @@
       <h3>Basic s-amcharts demo</h3>
       <demo-snippet>
         <template>
+          <style is="custom-style">
+            s-amcharts {
+              background-color: #222222;
+            }
+          </style>
+
           <s-amcharts id="chart"
               type="serial"
               theme="black"
@@ -60,7 +66,9 @@
                 "clustered": false,
                 "columnWidth": 0.5,
                 "legendValueText": "$[[value]]M",
-                "balloonText": "[[title]]<br /><b style='font-size: 130%'>$[[value]]M</b>"
+                "balloon": {
+                  "enabled": false
+                }
               }, {
                 "id": "g4",
                 "valueAxis": "v1",
@@ -73,7 +81,9 @@
                 "clustered": false,
                 "columnWidth": 0.3,
                 "legendValueText": "$[[value]]M",
-                "balloonText": "[[title]]<br /><b style='font-size: 130%'>$[[value]]M</b>"
+                "balloon": {
+                  "enabled": false
+                }
               }, {
                 "id": "g1",
                 "valueAxis": "v2",

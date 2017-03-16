@@ -14,13 +14,15 @@ A Web Component for high quality charts using amCharts lib.
 -->
 
 <dom-module id="s-amcharts">
+
+<link rel="import" type="css" href="../amcharts3/amcharts/plugins/export/export.css">
+
 <template>
 
 <style>
 
 :host {
   display: block;
-  background-color: #222222;
   width: 100%;
   height: 500px;
 }
@@ -28,6 +30,10 @@ A Web Component for high quality charts using amCharts lib.
 #chart {
   width: 100%;
   height: 100%;
+}
+
+.amcharts-export-menu {
+  @apply --s-amcharts-export-menu;
 }
 
 .amcharts-chart-div > a {
@@ -55,8 +61,23 @@ Polymer({
     },
 
     data: {
-      type: Object,
-      observer: '_dataChanged'
+      type: Array,
+      value: function() { return []; }
+    },
+
+    /**
+     * Delay in milliseconds to delay the initiation of the chart.
+     */
+    delay: {
+      type: Number,
+      value: 0
+    },
+
+    /**
+     * Chart instance of AmChart.
+     */
+    chart: {
+      notify: true
     },
 
     lang: {
@@ -73,7 +94,8 @@ Polymer({
     },
 
     plugins: {
-      type: Array
+      type: Array,
+      value: function() { return []; }
     },
 
     theme: {
@@ -84,29 +106,46 @@ Polymer({
     type: {
       type: String,
       value: 'serial'
-    },
-
-    _chart: Object
-  },
-
-  observers: [
-    '_configChanged(config, data, isAttached)'
-  ],
-
-  _configChanged: function(config, data, isAttached) {
-    if (Object.keys(config).length !== 0) {
-      config.dataProvider = data;
-      config.language = this.lang;
-      config.path = this.path || this.resolveUrl('../amcharts3/amcharts/');
-      config.theme = this.theme;
-      config.type = this.type;
-      this._chart = AmCharts.makeChart("chart", config);
     }
   },
 
-  _dataChanged: function(data) {
-    if (this._chart) {
-      this._chart.dataProvider = data;
+  observers: [
+    '_configChanged(config, data, isAttached)',
+    '_dataChanged(data, data.splices)'
+  ],
+
+  // This is a public method the user can call if they've
+  // changed our dimensions with CSS.
+  resize: function() {
+    if (this.chart) {
+      this.chart.invalidateSize();
+    }
+  },
+
+  updateChart: function() {
+    if (this.chart) {
+      this.chart.dataProvider = this.data;
+      this.chart.validateNow();
+    } else {
+      this.config.dataProvider = this.data;
+      this.config.language = this.lang;
+      this.config.path = this.path || this.resolveUrl('../amcharts3/amcharts/');
+      this.config.theme = this.theme;
+      this.config.type = this.type;
+      this.chart = AmCharts.makeChart(this.$.chart, this.config, this.delay);
+    }
+  },
+
+  _configChanged: function(config, data, isAttached) {
+    if (isAttached && Object.keys(config).length !== 0 && data.length !== 0) {
+      this.updateChart();
+    }
+  },
+
+  _dataChanged: function(data, dataSplices) {
+    if (this.chart) {
+      this.chart.dataProvider = data;
+      this.chart.validateNow();
     }
   }
 
