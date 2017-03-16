@@ -36,6 +36,10 @@ A Web Component for high quality charts using amCharts lib.
   @apply --s-amcharts-export-menu;
 }
 
+.amcharts-export-menu .export-main > a {
+  @apply --s-amcharts-export-menu-button;
+}
+
 .amcharts-chart-div > a {
   @apply --s-amcharts-link;
 }
@@ -82,7 +86,8 @@ Polymer({
 
     lang: {
       type: String,
-      value: 'en'
+      value: 'en',
+      observer: '_langChanged'
     },
 
     /**
@@ -110,8 +115,8 @@ Polymer({
   },
 
   observers: [
-    '_configChanged(config, data, isAttached)',
-    '_dataChanged(data, data.splices)'
+    '_configDataChanged(config, data, isAttached)',
+    '_dataSplicesChanged(data, data.splices)'
   ],
 
   // This is a public method the user can call if they've
@@ -136,15 +141,22 @@ Polymer({
     }
   },
 
-  _configChanged: function(config, data, isAttached) {
+  _configDataChanged: function(config, data, isAttached) {
     if (isAttached && Object.keys(config).length !== 0 && data.length !== 0) {
       this.updateChart();
     }
   },
 
-  _dataChanged: function(data, dataSplices) {
+  _dataSplicesChanged: function(data, dataSplices) {
     if (this.chart) {
       this.chart.dataProvider = data;
+      this.chart.validateData();
+    }
+  },
+
+  _langChanged: function(lang) {
+    if (this.chart) {
+      this.chart.language = lang;
       this.chart.validateNow();
     }
   }
