@@ -127,6 +127,11 @@ Polymer({
     }
   },
 
+  setStyle: function(query, style) {
+    var element = this.$$(query);
+    element.style.cssText = element.style.cssText + style;
+  },
+
   updateChart: function() {
     if (this.chart) {
       this.chart.dataProvider = this.data;
