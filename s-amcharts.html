@@ -26,6 +26,10 @@ A Web Component for high quality charts using amCharts lib.
   @apply --s-amcharts;
 }
 
+:host(:hover) .amcharts-export-menu {
+  @apply --s-amcharts-hover-export-menu;
+}
+
 #chart {
   width: 100%;
   height: 100%;
@@ -51,10 +55,6 @@ A Web Component for high quality charts using amCharts lib.
 .amcharts-export-menu li:hover > a,
 .amcharts-export-menu li.active > a {
   @apply --s-amcharts-export-menu-button-hover;
-}
-
-.amcharts-main-div:hover .amcharts-export-menu, .amcharts-stock-div:hover .amcharts-export-menu, .amcharts-export-menu.active {
-  @apply --s-amcharts-hover-export-menu;
 }
 
 .amcharts-chart-div > a {
