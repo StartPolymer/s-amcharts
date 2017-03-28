@@ -153,7 +153,7 @@ Polymer({
   updateChart: function() {
     if (this.chart) {
       this.chart.dataProvider = this.data;
-      this.chart.validateNow();
+      this.chart.validateData();
     } else {
       this.config.dataProvider = this.data;
       this.config.language = this.lang;
