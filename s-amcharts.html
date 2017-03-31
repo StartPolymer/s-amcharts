@@ -134,6 +134,7 @@ Polymer({
 
   observers: [
     '_configDataChanged(config, data, isAttached)',
+    '_configChanged(config.*)',
     '_dataSplicesChanged(data, data.splices)'
   ],
 
@@ -170,6 +171,14 @@ Polymer({
   _configDataChanged: function(config, data, isAttached) {
     if (isAttached && Object.keys(config).length !== 0 && data.length !== 0) {
       this.updateChart();
+    }
+  },
+
+  _configChanged: function(changeRecord) {
+    if (changeRecord.path !== 'config') {
+      var key = changeRecord.path.split('.')[1];
+      this.chart[key] = changeRecord.value;
+      this.chart.validateNow();
     }
   },
 
