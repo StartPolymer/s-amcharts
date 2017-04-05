@@ -75,6 +75,14 @@ Polymer({
 
   properties: {
     /**
+     * If true, then run validateNow after change config.
+     */
+    autoConfigValidate: {
+      type: Boolean,
+      value: false
+    },
+
+    /**
      * JSON object with chart properties defined.
      */
     config: {
@@ -99,6 +107,8 @@ Polymer({
      * Chart instance of AmChart.
      */
     chart: {
+      type: Object,
+      value: function() { return {}; },
       notify: true
     },
 
@@ -134,14 +144,14 @@ Polymer({
 
   observers: [
     '_configDataChanged(config, data, isAttached)',
-    '_configChanged(config.*)',
+    '_configChanged(config.*, isAttached)',
     '_dataSplicesChanged(data, data.splices)'
   ],
 
   // This is a public method the user can call if they've
   // changed our dimensions with CSS.
   resize: function() {
-    if (this.chart) {
+    if (Object.keys(this.chart).length !== 0) {
       this.chart.invalidateSize();
     }
   },
@@ -152,7 +162,7 @@ Polymer({
   },
 
   updateChart: function() {
-    if (this.chart) {
+    if (Object.keys(this.chart).length !== 0) {
       this.chart.dataProvider = this.data;
       this.chart.validateData();
     } else {
@@ -174,23 +184,25 @@ Polymer({
     }
   },
 
-  _configChanged: function(changeRecord) {
-    if (changeRecord.path !== 'config') {
+  _configChanged: function(changeRecord, isAttached) {
+    if (Object.keys(this.chart).length !== 0 && changeRecord.path !== 'config') {
       var key = changeRecord.path.split('.')[1];
       this.chart[key] = changeRecord.value;
-      this.chart.validateNow();
+      if (this.autoConfigValidate) {
+        this.chart.validateNow();
+      }
     }
   },
 
   _dataSplicesChanged: function(data, dataSplices) {
-    if (this.chart) {
+    if (Object.keys(this.chart).length !== 0) {
       this.chart.dataProvider = data;
       this.chart.validateData();
     }
   },
 
   _langChanged: function(lang) {
-    if (this.chart) {
+    if (Object.keys(this.chart).length !== 0) {
       this.chart.language = lang;
       this.chart.validateNow();
     }
