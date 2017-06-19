@@ -158,7 +158,9 @@ Polymer({
 
   setStyle: function(query, style) {
     var element = this.$$(query);
-    element.style.cssText = element.style.cssText + style;
+    if (element) {
+      element.style.cssText = element.style.cssText + style;
+    }
   },
 
   updateChart: function() {
